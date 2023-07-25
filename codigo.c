@@ -71,9 +71,9 @@ void cadastrarLivro(FILE *arquivo) {
     printf("Codigo: ");
     scanf("%d", &livro.codigo);
     printf("Titulo: ");
-    scanf(" %s", livro.titulo); // Espaço antes do %s para limpar o buffer do teclado
+    scanf(" %[^\n]", livro.titulo); 
     printf("Autor: ");
-    scanf(" %s", livro.autor); // Espaço antes do %s para limpar o buffer do teclado
+    scanf(" %[^\n]", livro.autor); 
     printf("Ano: ");
     scanf("%d", &livro.ano);
 
@@ -87,7 +87,7 @@ void listarLivros(FILE *arquivo) {
 
     printf("\n== Lista de Livros ==\n");
 
-    rewind(arquivo); // Volta ao início do arquivo
+    rewind(arquivo); //volta para o inicio do arquivo txt
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
         quantidadeTotal++;
@@ -95,7 +95,7 @@ void listarLivros(FILE *arquivo) {
 
     printf("Quantidade total de livros: %d\n", quantidadeTotal);
 
-    rewind(arquivo); // Volta ao início do arquivo
+    rewind(arquivo);
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
         printf("\nCodigo: %d\n", livro.codigo);
@@ -109,35 +109,38 @@ void listarLivros(FILE *arquivo) {
 void editarLivro(FILE *arquivo) {
     int codigo;
     struct Livro livro;
-    int posicao;
+    FILE *arquivoTemp = fopen("temp.txt", "w");
 
     printf("\n== Edicao de Livro ==\n");
     printf("Digite o codigo do livro que deseja editar: ");
     scanf("%d", &codigo);
 
-    rewind(arquivo); // Volta ao início do arquivo
+    rewind(arquivo);
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
         if (livro.codigo == codigo) {
             printf("Novo titulo: ");
-            scanf(" %[^\n]", livro.titulo); // Espaço antes do %[^\n] para limpar o buffer do teclado
+            scanf(" %[^\n]", livro.titulo); 
 
             printf("Novo autor: ");
-            scanf(" %[^\n]", livro.autor); // Espaço antes do %[^\n] para limpar o buffer do teclado
+            scanf(" %[^\n]", livro.autor); 
 
             printf("Novo ano: ");
             scanf("%d", &livro.ano);
 
-            posicao = ftell(arquivo) - strlen(livro.titulo) - strlen(livro.autor) - 12; // Considera o tamanho das strings e dos números lidos
-            fseek(arquivo, posicao, SEEK_SET);
-            fprintf(arquivo, "%d;%s;%s;%d\n", livro.codigo, livro.titulo, livro.autor, livro.ano);
-
+            fprintf(arquivoTemp, "%d;%s;%s;%d\n", livro.codigo, livro.titulo, livro.autor, livro.ano);
             printf("Livro editado com sucesso!\n");
-            return;
+        } else {
+            fprintf(arquivoTemp, "%d;%s;%s;%d\n", livro.codigo, livro.titulo, livro.autor, livro.ano);
         }
     }
 
-    printf("Livro nao encontrado!\n");
+    fclose(arquivo);
+    fclose(arquivoTemp);
+    remove("biblioteca.txt");
+    rename("temp.txt", "biblioteca.txt");
+
+    arquivo = fopen("biblioteca.txt", "a+");
 }
 
 void excluirLivro(FILE *arquivo) {
@@ -149,7 +152,7 @@ void excluirLivro(FILE *arquivo) {
     printf("Digite o codigo do livro que deseja excluir: ");
     scanf("%d", &codigo);
 
-    rewind(arquivo); // Volta ao início do arquivo
+    rewind(arquivo);
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
         if (livro.codigo == codigo) {
@@ -198,7 +201,7 @@ void buscarLivro(FILE *arquivo) {
             return;
     }
 
-    rewind(arquivo); // Volta ao início do arquivo
+    rewind(arquivo);
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
         if ((opcao == 1 && livro.codigo == livro.codigo) ||
