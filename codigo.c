@@ -9,9 +9,9 @@ struct Livro {
 
 void cadastrarLivro(FILE *arquivo);
 void listarLivros(FILE *arquivo);
+void buscarLivro(FILE *arquivo);
 void editarLivro(FILE *arquivo);
 void excluirLivro(FILE *arquivo);
-void buscarLivro(FILE *arquivo);
 
 int main() {
     FILE *arquivo;
@@ -32,7 +32,7 @@ int main() {
         printf("5 - Excluir livro\n");
         printf("0 - Sair\n");
         printf("==========================\n");
-        printf("Digite sua opcao: ");
+        printf("Digite sua opção: ");
         scanf("%d", &opcao);
 
         switch (opcao) {
@@ -105,6 +105,33 @@ void listarLivros(FILE *arquivo) {
     }
 }
 
+void buscarLivro(FILE *arquivo) {
+    int codigo;
+    struct Livro livro;
+    int encontrado = 0;
+
+    printf("\n== Buscar Livro por Codigo ==\n");
+    printf("Digite o codigo do livro: ");
+    scanf("%d", &codigo);
+
+    rewind(arquivo);
+
+    while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
+        if (livro.codigo == codigo) {
+            printf("\nCodigo: %d\n", livro.codigo);
+            printf("Titulo: %s\n", livro.titulo);
+            printf("Autor: %s\n", livro.autor);
+            printf("Ano: %d\n", livro.ano);
+            printf("--------------------------\n");
+            encontrado = 1;
+            break;
+        }
+    }
+    if (encontrado == 0) {
+        printf("Livro nao encontrado!\n");
+    }
+}
+
 void editarLivro(FILE *arquivo) {
     int codigo;
     struct Livro livro;
@@ -167,31 +194,4 @@ void excluirLivro(FILE *arquivo) {
     rename("temp.txt", "biblioteca.txt");
 
     arquivo = fopen("biblioteca.txt", "a+");
-}
-
-void buscarLivro(FILE *arquivo) {
-    int codigo;
-    struct Livro livro;
-    int encontrado = 0;
-
-    printf("\n== Buscar Livro por Codigo ==\n");
-    printf("Digite o codigo do livro: ");
-    scanf("%d", &codigo);
-
-    rewind(arquivo);
-
-    while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
-        if (livro.codigo == codigo) {
-            printf("\nCodigo: %d\n", livro.codigo);
-            printf("Titulo: %s\n", livro.titulo);
-            printf("Autor: %s\n", livro.autor);
-            printf("Ano: %d\n", livro.ano);
-            printf("--------------------------\n");
-            encontrado = 1;
-            break;
-        }
-    }
-    if (encontrado == 0) {
-        printf("Livro nao encontrado!\n");
-    }
 }
