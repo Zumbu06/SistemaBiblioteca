@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 struct Livro {
     int codigo;
@@ -171,52 +170,28 @@ void excluirLivro(FILE *arquivo) {
 }
 
 void buscarLivro(FILE *arquivo) {
-    int opcao;
+    int codigo;
     struct Livro livro;
     int encontrado = 0;
 
-    printf("\n== Buscar Livro ==\n");
-    printf("1 - Buscar por Codigo\n");
-    printf("2 - Buscar por Titulo\n");
-    printf("3 - Buscar por Autor\n");
-    printf("Digite a opcao desejada: ");
-    scanf("%d", &opcao);
-
-
-    switch (opcao) {
-        case 1:
-            printf("Digite o codigo do livro: ");
-            scanf("%d", &livro.codigo);
-            break;
-        case 2:
-            printf("Digite o titulo do livro: ");
-            scanf("%[^\n]", livro.titulo);
-            break;
-        case 3:
-            printf("Digite o autor do livro: ");
-            scanf("%[^\n]", livro.autor);
-            break;
-        default:
-            printf("Opcao invalida!\n");
-            return;
-    }
+    printf("\n== Buscar Livro por Codigo ==\n");
+    printf("Digite o codigo do livro: ");
+    scanf("%d", &codigo);
 
     rewind(arquivo);
 
     while (fscanf(arquivo, "%d;%[^;];%[^;];%d\n", &livro.codigo, livro.titulo, livro.autor, &livro.ano) == 4) {
-        if ((opcao == 1 && livro.codigo == livro.codigo) ||
-            (opcao == 2 && strcmp(livro.titulo, livro.titulo) == 0) ||
-            (opcao == 3 && strcmp(livro.autor, livro.autor) == 0)) {
+        if (livro.codigo == codigo) {
             printf("\nCodigo: %d\n", livro.codigo);
             printf("Titulo: %s\n", livro.titulo);
             printf("Autor: %s\n", livro.autor);
             printf("Ano: %d\n", livro.ano);
             printf("--------------------------\n");
             encontrado = 1;
+            break;
         }
     }
-
-    if (!encontrado) {
+    if (encontrado == 0) {
         printf("Livro nao encontrado!\n");
     }
 }
