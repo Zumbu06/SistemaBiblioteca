@@ -76,7 +76,7 @@ void cadastrarLivro(FILE *arquivo) {
     printf("Ano: ");
     scanf("%d", &livro.ano);
 
-    fprintf(arquivo, "%d;%s;%s;%d\n", livro.codigo, livro.titulo, livro.autor, livro.ano);
+    fprintf(arquivo, "%d;%[^;];%[^;];%d\n", livro.codigo, livro.titulo, livro.autor, livro.ano);
     printf("\nLivro Cadastrado com Sucesso\n");
 }
 
